@@ -6,7 +6,11 @@ Por exemplo, podemos criar uma função para ler o arquivo JSON, outra função 
 
 Observe que agora temos três funções separadas com responsabilidades distintas:
 
-readJsonFile: lê o arquivo JSON e retorna o seu conteúdo;
-convertData: converte os dados do formato original para um formato mais adequado;
-generateOutput: gera a saída em JSON a partir dos dados processados.
-Também fizemos algumas alterações nos tipos e na nomenclatura de algumas propriedades para deixar o código mais consistente e semântico.
+- readJsonFile: lê o arquivo JSON e retorna o seu conteúdo;
+- convertData: converte os dados do formato original para um formato mais adequado;
+- generateOutput: gera a saída em JSON a partir dos dados processados.
+
+Também fiz algumas alterações nos tipos e na nomenclatura de algumas propriedades para deixar o código mais consistente e semântico.
+
+Para deixar um pouco mais complexo, fiz a alteração de valores de duas propriedades utilizando a desestruturação e findIndex capturando atraves da key o value e fazendo a troca de valores e assim gerando como resultado uma nova lista.json
+

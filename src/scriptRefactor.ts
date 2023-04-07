@@ -1,20 +1,21 @@
 import * as fs from 'fs';
-
-interface EnvironmentProperty {
-  key: string;
-  value: string;
-}
-
-interface Resource {
-  environment: string;
-  application: string;
-  component: string;
-  environmentProperties: EnvironmentProperty[];
-}
+import { Resource, InputJson, OutputJson } from './Interface/interfaces';
+import * as pathJoin from 'path';
 
 function readJsonFile(path: string): any {
   const content = fs.readFileSync(path, 'utf-8');
   return JSON.parse(content);
+}
+function createJsonFile(path: string, outputJson: OutputJson[]): any {
+  const content = fs.writeFile(
+    path,
+    JSON.stringify(outputJson, null, 2),
+    (err) => {
+      if (err) throw err;
+      console.log('O arquivo foi criado!');
+    },
+  );
+  return content;
 }
 
 function convertData(data: any): Resource[] {
@@ -35,9 +36,31 @@ function generateOutput(data: Resource[]): string {
   return JSON.stringify(data, null, 2);
 }
 
-const data = readJsonFile(
-  'c:\\$\\cursojstypescript\\src\\A0022-public-private\\lista.json',
-);
+const data = readJsonFile(pathJoin.join(`${__dirname}/lista.json`));
 const resources = convertData(data);
 const json = generateOutput(resources);
-console.log(json);
+
+console.log('trocando os valores');
+
+const inputJson: InputJson[] = data;
+
+const outputJson: OutputJson[] = inputJson.map((input: InputJson) => {
+  const { environmentPropertie } = input.resource;
+  const { properties: environmentProperty } = environmentPropertie;
+  const instanceIndex = environmentProperty.findIndex(
+    (prop) => prop.key === 'instance',
+  );
+  const baseIndex = environmentProperty.findIndex(
+    (prop) => prop.key === 'base',
+  );
+  const instanceValue = environmentProperty[instanceIndex].value;
+  const baseValue = environmentProperty[baseIndex].value;
+  environmentProperty[instanceIndex].value = baseValue;
+  environmentProperty[baseIndex].value = instanceValue;
+  return { resource: input.resource };
+});
+
+const createFile = createJsonFile(
+  pathJoin.join(`${__dirname}/Newlista.json`),
+  outputJson,
+);
